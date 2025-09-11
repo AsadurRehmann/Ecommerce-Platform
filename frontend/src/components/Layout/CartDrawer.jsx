@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CartContent from "../Cart/CartContent";
 

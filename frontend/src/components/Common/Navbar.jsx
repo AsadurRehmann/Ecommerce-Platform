@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 import {
   HiOutlineUser,
@@ -125,7 +125,7 @@ const Navbar = () => {
             </Link>
             <Link
               to="#"
-              
+
               onClick={toggleNavDrawer}
               className="block text-gray-600 hover:text-black"
             >

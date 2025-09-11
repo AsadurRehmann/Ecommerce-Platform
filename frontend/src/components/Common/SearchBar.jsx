@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { HiMagnifyingGlass, HiMiniXMark } from "react-icons/hi2";
 
 const SearchBar = () => {
@@ -13,7 +13,7 @@ const SearchBar = () => {
     e.preventDefault();
     console.log(searchTerm);
     setIsOpen(false);
-    
+
   }
   return (
     <div
