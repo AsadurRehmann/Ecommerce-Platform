@@ -5,3 +5,14 @@
   font-optical-sizing: auto;
 
 }
+
+/* In your global CSS file (e.g., index.css) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, Edge */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* for Internet Explorer and Edge */
+  scrollbar-width: none;     /* for Firefox */
+}
+

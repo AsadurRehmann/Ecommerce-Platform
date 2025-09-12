@@ -202,7 +202,7 @@ const handleMouseMove = (e) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
         onMouseLeave={handleMouseUpOrLeave}
-        className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${
+        className={`container mx-auto overflow-x-scroll flex space-x-6 relative scrollbar-hide ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
         } `}
       >
