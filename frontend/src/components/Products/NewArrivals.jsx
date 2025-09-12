@@ -101,6 +101,27 @@ function NewArrivals() {
     },
   ];
 
+ const scrollStart = useRef(0);
+
+const handleMouseDown = (e) => {
+  setIsDragging(true);
+  setStartX(e.pageX - scrollRef.current.offsetLeft);
+  scrollStart.current = scrollRef.current.scrollLeft;
+};
+
+const handleMouseMove = (e) => {
+  if (!isDragging) return;
+
+  const x = e.pageX - scrollRef.current.offsetLeft;
+  const walk = x - startX;
+  scrollRef.current.scrollLeft = scrollStart.current - walk;
+};
+
+
+  const handleMouseUpOrLeave = (e) => {
+    setIsDragging(false);
+  };
+
   const scroll = (direction) => {
     const scrollAmount = direction === "left" ? -300 : 300;
     scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
@@ -123,6 +144,7 @@ function NewArrivals() {
       scrollLeft: container.scrollLeft,
       clientWidth: container.clientWidth,
       containerScrollWidth: container.scrollWidth,
+      offsetLeft: scrollRef.current.offsetLeft,
     });
   };
 
@@ -140,7 +162,7 @@ function NewArrivals() {
   }, []);
 
   return (
-    <section>
+    <section className="py-16 px-4 lg:px-0">
       <div className="container mx-auto text-center mb-10 relative">
         <h3 className="text-3xl font-bold mb-4">Explore New Arrivals</h3>
         <p className="text-lg text-gray-800 mb-8 ">
@@ -180,7 +202,9 @@ function NewArrivals() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
         onMouseLeave={handleMouseUpOrLeave}
-        className="container mx-auto overflow-x-scroll flex space-x-6 relative"
+        className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        } `}
       >
         {newArrivals.map((product) => (
           <div
@@ -191,11 +215,12 @@ function NewArrivals() {
               src={product.images[0]?.url}
               alt={product.images[0]?.altText || product.name}
               className="w-full h-[500px] object-cover rounded-lg"
+              draggable="false"
             />
             <div className="absolute bottom-0 left-0 right-0 backdrop-blur-md text-white/50 p-4 rounded-b-lg">
               <Link to={`/product/${product._id}`} className="block">
                 <h4 className="font-medium">{product.name}</h4>
-                <p className="mt-1">{product.price}</p>
+                <p className="mt-1">$ {product.price}</p>
               </Link>
             </div>
           </div>
