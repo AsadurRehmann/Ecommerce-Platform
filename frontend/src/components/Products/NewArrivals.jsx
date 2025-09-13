@@ -139,13 +139,6 @@ const handleMouseMove = (e) => {
       setCanScrollLeft(leftScroll > 0);
       setCanScrollRight(rightScrollable);
     }
-
-    console.log({
-      scrollLeft: container.scrollLeft,
-      clientWidth: container.clientWidth,
-      containerScrollWidth: container.scrollWidth,
-      offsetLeft: scrollRef.current.offsetLeft,
-    });
   };
 
   useEffect(() => {
