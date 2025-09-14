@@ -6,6 +6,8 @@ import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import CollectionPage from "./Pages/CollectionPage.jsx";
+import ProductDetails from "./components/Products/ProductDetails";
+import Checkout from "./components/Cart/Checkout";
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
           <Route path="collections/:collection" element={<CollectionPage />} />
+          <Route path="product/:id" element={<ProductDetails />} />
+          <Route path="checkout" element={<Checkout/>}/>
           {/*user layout*/}
         </Route>
         <Route>{/*Admin lauout*/}</Route>
