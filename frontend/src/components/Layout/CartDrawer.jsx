@@ -3,10 +3,11 @@ import CartContent from "../Cart/CartContent";
 import { useNavigate } from "react-router-dom";
 
 function CartDrawer({ drawerOpen, toggleCartDrawer }) {
-  const navigate=useNavigate();
-  const handleCheckout=()=>{
-    navigate("/checkout")
-  }
+  const navigate = useNavigate();
+  const handleCheckout = () => {
+    toggleCartDrawer();
+    navigate("/checkout");
+  };
   return (
     <div
       className={`fixed top-0 right-0 w-3/4 sm:w-1/2 md:w-[30rem] h-full bg-white shadow-lg transform transition-transform
@@ -24,11 +25,14 @@ function CartDrawer({ drawerOpen, toggleCartDrawer }) {
       <div className="flex-grow p-4 overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 ">Your Cart</h2>
         {/* component for cart content  */}
-        <CartContent/>
+        <CartContent />
       </div>
       {/* component button fixed at button  */}
       <div className="sticky p-4 bg-white bottom-0">
-        <button onClick={handleCheckout} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+        >
           Checkout
         </button>
         <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
