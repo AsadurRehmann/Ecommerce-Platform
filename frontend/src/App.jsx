@@ -11,6 +11,7 @@ import Checkout from "./components/Cart/Checkout";
 import OrderConfirmationPage from "./Pages/OrderConfirmationPage";
 import OrderDetailsPage from "./Pages/OrderDetailsPage";
 import MyOrdersPage from "./Pages/MyOrdersPage";
+import AdminLayout from "./components/Admin/AdminLayout.jsx";
 
 const App = () => {
   return (
@@ -24,13 +25,22 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="collections/:collection" element={<CollectionPage />} />
           <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="checkout" element={<Checkout/>}/>
-          <Route path="order-confirmation" element={<OrderConfirmationPage/>}/>
-          <Route path="order/:id" element={<OrderDetailsPage/>}/>
-          <Route path="/my-orders" element={<MyOrdersPage/>}/>
+          <Route path="checkout" element={<Checkout />} />
+          <Route
+            path="order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
+          <Route path="order/:id" element={<OrderDetailsPage />} />
+          <Route path="/my-orders" element={<MyOrdersPage />} />
           {/*user layout*/}
         </Route>
-        <Route>{/*Admin lauout*/}</Route>
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* Add your admin routes here */}
+          {/* <Route index element={<AdminDashboard />} /> */}
+          {/* <Route path="products" element={<AdminProducts />} /> */}
+          {/* <Route path="orders" element={<AdminOrders />} /> */}
+          {/* admin layout */}
+        </Route>
       </Routes>
     </BrowserRouter>
   );
