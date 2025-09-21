@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/Users.js");
 const router = express.Router();
+const {protect}=require("../middleware/authMiddleware.js")
 
 router.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
@@ -73,5 +74,10 @@ router.post("/login", async (req, res) => {
 
     }
 })
+
+router.get("/profile", protect, async (req, res) => {
+  res.json(req.user);
+});
+
 
 module.exports = router;
