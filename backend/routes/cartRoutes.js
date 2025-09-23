@@ -53,27 +53,36 @@ router.post("/", async (req, res) => {
             }
 
             // recalculate the total price
-            cart.totalPrice=cart.products.reduce(
-                (acc,item)=> acc + item.price * item.quantity,
+            cart.totalPrice = cart.products.reduce(
+                (acc, item) => acc + item.price * item.quantity,
                 0
             )
             await cart.save();
-            return res.status(200).json({cart})
-        }else{
+            return res.status(200).json({ cart })
+        } else {
             // create a new cart for the guest or user
-            const newCart=await Cart.create({
-                userId:userId ? userId : undefined,
+            const newCart = await Cart.create({
+                user: userId ? userId : undefined,
                 guestId: guestId ? guestId : "guest_" + new Date().getTime(),
-                products:[
+                products: [
                     {
                         productId,
-                        name:product.name,
-                        image:product.images[0].[url]
+                        name: product.name,
+                        image: product.images[0].url,
+                        price: product.price,
+                        size,
+                        color,
+                        quantity
                     }
-                ]
+                ],
+                totalPrice:product.price * quantity
             })
+            res.status(201).json(newCart)
         }
     } catch (error) {
-
+        console.error(error);
+        res.status(500).json({message:"server error"})
     }
 })
+
+module.exports=router;
