@@ -6,7 +6,7 @@ const Checkout = require("../models/Checkout");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
-
+//working
 router.put("/:id", protect, async (req, res) => {
     const { paymentStatus,paymentDetails } = req.body;
     try {
@@ -32,7 +32,7 @@ router.put("/:id", protect, async (req, res) => {
 
     }
 })
-
+//working
 router.post("/", protect, async (req, res) => {
     const { checkoutItems, shippingAddress, paymentMethod, totalPrice } = req.body;
 
@@ -58,9 +58,7 @@ router.post("/", protect, async (req, res) => {
         res.status(500).json({ message: "server error" });
     }
 })
-
-
-
+//working
 router.get("/", protect, async (req, res) => {
   try {
     const orders = await Checkout.find().populate("user", "name email");
@@ -69,7 +67,7 @@ router.get("/", protect, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+//working
 router.get("/myorders", protect, async (req, res) => {
   try {
     const myOrders = await Checkout.find({ user: req.user._id });
@@ -78,7 +76,7 @@ router.get("/myorders", protect, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+//working
 router.put("/:id/status", protect, async (req, res) => {
   const { status } = req.body;
   try {

@@ -3,8 +3,9 @@ const dotenv = require("dotenv");
 const Product = require("./models/Products");
 const User = require("./models/Users");
 const Cart = require("./models/Cart");
-const produsts = require("./data/products");
+const Order=require("./models/Order");
 const products = require("./data/products");
+const orders=require("./data/orders")
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const seedData = async () => {
         await Product.deleteMany();
         await User.deleteMany();
         await Cart.deleteMany();
+        await Order.deleteMany();
 
         console.log("Existing data deleted succesfully.")
 
@@ -37,7 +39,8 @@ const seedData = async () => {
 
         // insert products.js in DB
         await Product.insertMany(sampleProducts);
-        console.log("Products seeded successfully")
+        await Order.insertMany(orders);
+        console.log("Products seeded successfully");
         process.exit();
 
     } catch (err) {
