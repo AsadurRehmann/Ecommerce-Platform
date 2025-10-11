@@ -7,6 +7,32 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+router.put("/:id", protect, async (req, res) => {
+    const { paymentStatus,paymentDetails } = req.body;
+    try {
+        const checkout = await Checkout.findById(req.params.id);
+
+        if (!checkout) {
+            return res.status(404).json({ message: "Checkout not found" })
+        }
+
+        if (paymentStatus === "paid") {
+            checkout.isPaid = true;
+            checkout.paymentStatus = paymentStatus;
+            checkout.paymentDetails = paymentDetails;
+            checkout.paidAt = Date.now();
+            await checkout.save();
+            res.status(200).json(checkout);
+        } else {
+            res.status(400).json({ message: "invalid payment status" })
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+
+    }
+})
+
 router.post("/", protect, async (req, res) => {
     const { checkoutItems, shippingAddress, paymentMethod, totalPrice } = req.body;
 
@@ -33,31 +59,7 @@ router.post("/", protect, async (req, res) => {
     }
 })
 
-router.put("/:id", protect, async (req, res) => {
-    const { paymentStatus, paymentDetails } = req.body;
-    try {
-        const checkout = await Checkout.findById(req.params.id);
 
-        if (!checkout) {
-            return res.status(404).json({ message: "Checkout not found" })
-        }
-
-        if (paymentStatus === "paid") {
-            checkout.isPaid = true;
-            checkout.paymentStatus = paymentStatus;
-            checkout.paymentDetails = paymentDetails;
-            checkout.paidAt = Date.now();
-            await checkout.save();
-            res.status(200).json(checkout);
-        } else {
-            res.status(400).json({ message: "invalid payment status" })
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
-
-    }
-})
 
 router.get("/", protect, async (req, res) => {
   try {
