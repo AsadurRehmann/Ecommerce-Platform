@@ -11,6 +11,8 @@ const orderRoutes = require("./routes/orderRoutes.js");
 const uploadsRoutes = require("./routes/uploadsRoutes.js");
 const subscriberRoutes = require("./routes/subscribeRoutes.js");
 const adminRoutes = require("./routes/adminRoutes.js");
+const adminProductRoutes = require("./routes/productAdminRoutes.js");
+const adminOrderRoutes = require("./routes/adminOrderRoutes.js");
 
 dotenv.config();
 connectDB();
@@ -31,6 +33,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/uploads", uploadsRoutes);
 app.use("/api", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/products", adminProductRoutes);
+app.use("/api/admin/orders", adminOrderRoutes);
 
 const PORT = process.env.APP_PORT || 8080;
 app.listen(PORT, () => {
