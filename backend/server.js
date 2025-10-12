@@ -2,29 +2,33 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/UserRoutes.js");
-const productRoutes=require("./routes/ProductRoutes.js");
-const cartRoutes=require("./routes/cartRoutes.js")
-const checkoutRoutes=require("./routes/checkoutRoutes.js");
-const orderRoutes=require("./routes/orderRoutes.js");
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+const userRoutes = require("./routes/UserRoutes.js");
+const productRoutes = require("./routes/ProductRoutes.js");
+const cartRoutes = require("./routes/cartRoutes.js");
+const checkoutRoutes = require("./routes/checkoutRoutes.js");
+const orderRoutes = require("./routes/orderRoutes.js");
+const uploadsRoutes = require("./routes/uploadsRoutes.js");
+
 dotenv.config();
-const PORT = process.env.APP_PORT;
 connectDB();
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
 app.get("/", (req, res) => {
-    res.send("Holla");
-})
+  res.send("Holla");
+});
 
-app.use("/api/users", userRoutes)
-app.use("/api/products",productRoutes);
-app.use("/api/cart",cartRoutes)
-app.use("/api/checkout",checkoutRoutes);
-app.use("/api/orders",orderRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/checkout", checkoutRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/uploads", uploadsRoutes);
 
+const PORT = process.env.APP_PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`app is running at http://localhost:${PORT}`);
-})
+  console.log(`App is running at http://localhost:${PORT}`);
+});
