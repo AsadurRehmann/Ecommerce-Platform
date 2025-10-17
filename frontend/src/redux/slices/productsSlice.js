@@ -4,35 +4,43 @@ import axios from 'axios';
 // Async thunk to fetch products by filters
 export const fetchProductsByFilters = createAsyncThunk(
   "products/fetchByFilters",
-  async ({
-    collection,
-    size,
-    color,
-    gender,
-    minPrice,
-    maxPrice,
-    sortBy,
-    search,
-    category,
-    material,
-    brand,
-    limit
-  }) => {
+  async (filters) => {
+    const {
+      collection,
+      size,
+      color,
+      gender,
+      minPrice,
+      maxPrice,
+      sortBy,
+      search,
+      category,
+      material,
+      brand,
+      limit
+    } = filters;
+
     const query = new URLSearchParams();
-    if (collection) query.append('collection', collection);
-    if (size) query.append('size', size);
-    if (color) query.append('color', color);
-    if (gender) query.append('gender', gender);
+    if (collection && collection !== 'all') query.append('collection', collection);
+    if (size && size !== 'all') query.append('size', size);
+    if (color && color !== 'all') query.append('color', color);
+    if (gender && gender !== 'all') {
+      // Ensure gender is properly capitalized to match your database
+      const formattedGender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+      query.append('gender', formattedGender);
+    }
     if (minPrice) query.append('minPrice', minPrice);
     if (maxPrice) query.append('maxPrice', maxPrice);
-    if (sortBy) query.append('sortBy', sortBy);
+    if (sortBy && sortBy !== 'default') query.append('sortBy', sortBy);
     if (search) query.append('search', search);
-    if (category) query.append('category', category);
-    if (material) query.append('material', material);
-    if (brand) query.append('brand', brand);
+    if (category && category !== 'all') query.append('category', category);
+    if (material && material !== 'all') query.append('material', material);
+    if (brand && brand !== 'all') query.append('brand', brand);
     if (limit) query.append('limit', limit);
 
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`);
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`;
+
+    const response = await axios.get(url);
     return response.data;
   }
 );

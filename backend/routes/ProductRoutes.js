@@ -161,7 +161,6 @@ router.get("/", async (req, res) => {
         let products = await Product.find(query)
             .sort(sort)
             .limit(Number(limit) || 0);
-
         res.json(products)
     } catch (err) {
         console.error(err);
