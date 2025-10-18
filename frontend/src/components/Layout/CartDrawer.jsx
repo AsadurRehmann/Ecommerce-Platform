@@ -1,12 +1,21 @@
 import { IoMdClose } from "react-icons/io";
 import CartContent from "../Cart/CartContent";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function CartDrawer({ drawerOpen, toggleCartDrawer }) {
   const navigate = useNavigate();
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+  const userId = user ? user._id : null;
+
   const handleCheckout = () => {
     toggleCartDrawer();
-    navigate("/checkout");
+    if (!userId) {
+      navigate("/login?redirect=checkout");
+    } else {
+      navigate("/checkout");
+    }
   };
   return (
     <div
@@ -24,20 +33,29 @@ function CartDrawer({ drawerOpen, toggleCartDrawer }) {
       {/* cart content with scrollabe area */}
       <div className="flex-grow p-4 overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 ">Your Cart</h2>
+        {cart && cart?.products?.length > 0 ? (
+          <CartContent cart={cart} userId={userId} guestId={guestId} />
+        ) : (
+          <p className="text-gray-600">Your cart is empty.</p>
+        )}
         {/* component for cart content  */}
-        <CartContent />
+       
       </div>
-      {/* component button fixed at button  */}
+      {/* Checkout button fixed at button  */}
       <div className="sticky p-4 bg-white bottom-0">
-        <button
-          onClick={handleCheckout}
-          className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
-        >
-          Checkout
-        </button>
-        <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
-          Shipping ,taxes ,and discount codes calculated at checkout.
-        </p>
+        {cart && cart?.products?.length > 0 && (
+          <>
+            <button
+              onClick={handleCheckout}
+              className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+            >
+              Checkout
+            </button>
+            <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
+              Shipping ,taxes ,and discount codes calculated at checkout.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

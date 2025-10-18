@@ -8,10 +8,12 @@ import SearchBar from "./SearchBar";
 import CartDrawer from "../Layout/CartDrawer";
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+  const { cart } = useSelector((state) => state.cart);
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
@@ -20,16 +22,21 @@ const Navbar = () => {
   const toggleCartDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+
+  // Calculate total items in cart
+  const cartItemCount = cart?.products?.reduce((total, product) => {
+    return total + (product.quantity || 0);
+  }, 0) || 0;
+
   return (
     <>
       <nav className="container mx-auto flex items-center justify-between py-4 px-6">
-        {/* Left logo */}
         <div>
           <Link to="/" className="text-2xl font-medium">
             Rabbit
           </Link>
         </div>
-        {/* center navigation links */}
+
         <div className="hidden md:flex space-x-6">
           <Link
             to="/collections/all?gender=Men"
@@ -56,7 +63,7 @@ const Navbar = () => {
             Bottom Wear
           </Link>
         </div>
-        {/* right-icons */}
+
         <div className="flex items-center space-x-4">
           <Link
             to="/admin"
@@ -68,16 +75,19 @@ const Navbar = () => {
           <Link to="/profile" className="hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700" />
           </Link>
+
           <button
             onClick={toggleCartDrawer}
             className="relative hover:text-black"
           >
             <HiOutlineShoppingBag className="h-5 w-6 text-gray-700" />
-            <span className="absolute -top-2  bg-[#ea2e0e] text-white text-xs rounded-full px-2 py-0.5">
-              4
-            </span>
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#ea2e0e] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
           </button>
-          {/* search */}
+
           <div className="overflow-hidden">
             <SearchBar />
           </div>
@@ -90,7 +100,6 @@ const Navbar = () => {
 
       <CartDrawer drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer} />
 
-      {/* mobile navigation  */}
       <div
         className={`fixed top-0 left-0 w-3/4 sm:w-1/2 md:w-1/3 h-full bg-white shadow-lg transform
         transition-transform duration-300 z-50 ${
@@ -99,7 +108,7 @@ const Navbar = () => {
       >
         <div className="flex justify-end p-4">
           <button onClick={toggleNavDrawer}>
-            <IoMdClose className="h-6 w-6  text-gray-600" />
+            <IoMdClose className="h-6 w-6 text-gray-600" />
           </button>
         </div>
         <div className="p-4">

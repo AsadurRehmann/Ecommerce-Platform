@@ -6,8 +6,9 @@ import { createCheckout, clearError } from "../../redux/slices/checkoutSlice";
 function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, currentCheckout } = useSelector((state) => state.checkout);
-  const { cart } = useSelector((state) => state.cart); // Get cart from Redux store
+  const { loading, error, cart } = useSelector((state) => state.cart);
+  const {user}=useSelector((state)=>state.auth)
+
 
   const [shippingAddress, setShippingAddress] = useState({
     firstName: "",
@@ -18,6 +19,13 @@ function Checkout() {
     country: "",
     phone: "",
   });
+
+  //ensure cart is loaded before proceeding
+  useEffect(()=>{
+    if(!cart || !cart.products || cart.products.length ===0){
+      navigate("/")
+    }
+  },[cart,navigate])
 
   const handleCreateCheckout = async (e) => {
     e.preventDefault();
