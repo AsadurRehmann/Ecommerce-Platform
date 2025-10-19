@@ -34,7 +34,7 @@ const Navbar = () => {
       <nav className="container mx-auto flex items-center justify-between py-4 px-6">
         <div>
           <Link to="/" className="text-2xl font-medium">
-            Rabbit
+            ShessshStyle
           </Link>
         </div>
 
@@ -86,7 +86,7 @@ const Navbar = () => {
           >
             <HiOutlineShoppingBag className="h-5 w-6 text-gray-700" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#ea2e0e] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-[#1A2B3C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {cartItemCount}
               </span>
             )}

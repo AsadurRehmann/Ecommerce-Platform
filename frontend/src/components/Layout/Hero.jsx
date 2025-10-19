@@ -1,4 +1,4 @@
-import heroImg from "../../assets/rabbit-hero.webp";
+import heroImg from "../../assets/Hero.jpg";
 import { Link } from "react-router-dom";
 function Hero() {
   return (
