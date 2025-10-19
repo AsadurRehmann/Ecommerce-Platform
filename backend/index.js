@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
+const connectDB = require("./config/db.js");
 
 const userRoutes = require("./routes/UserRoutes.js");
 const productRoutes = require("./routes/ProductRoutes.js");
@@ -55,8 +55,12 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/admin/products", adminProductRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 
+module.exports = app;
 
-const PORT = process.env.APP_PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App is running at http://localhost:${PORT}`);
-});
+// ✅ Run normally when developing locally
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.APP_PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`Server running locally at http://localhost:${PORT}`);
+  });
+}
