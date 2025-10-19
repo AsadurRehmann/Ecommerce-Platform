@@ -105,7 +105,7 @@ export const getAllProducts = createAsyncThunk(
     try {
       const token = localStorage.getItem("userToken");
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/products`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/products`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -128,7 +128,7 @@ export const createProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("userToken");
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/products`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/products`,
         productData,
         {
           headers: {
@@ -153,7 +153,7 @@ export const updateProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("userToken");
       const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/products/${productId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/products/${productId}`,
         productData,
         {
           headers: {
@@ -178,7 +178,7 @@ export const deleteProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("userToken");
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/products/${productId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/products/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

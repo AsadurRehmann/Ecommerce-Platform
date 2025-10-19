@@ -14,6 +14,7 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const { cart } = useSelector((state) => state.cart);
+  const {user}=useSelector((state)=>state.auth)
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
@@ -65,12 +66,15 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Link
+          {user && user.role==="admin" &&(
+            <Link
             to="/admin"
             className="block bg-black text-white px-2 rounded text-sm"
           >
             Admin
           </Link>
+          )}
+
 
           <Link to="/profile" className="hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700" />

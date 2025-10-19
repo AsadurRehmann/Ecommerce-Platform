@@ -12,6 +12,7 @@ import {
 function UserManagement() {
   const dispatch = useDispatch();
   const { users, loading, error, success, operation } = useSelector((state) => state.admin);
+  const {user}=useSelector((state)=>state.auth)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,8 +22,11 @@ function UserManagement() {
   });
 
   useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    if(user && user.role==="admin"){
+      dispatch(getAllUsers());
+    }
+
+  }, [dispatch,user]);
 
   useEffect(() => {
     if (error) {

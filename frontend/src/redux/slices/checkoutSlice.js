@@ -266,4 +266,4 @@ export const {
   setCurrentCheckout
 } = checkoutSlice.actions;
 
-export default checkoutSlice.reducer; 
+export default checkoutSlice.reducer;
