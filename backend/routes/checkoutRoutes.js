@@ -1,8 +1,8 @@
 const express = require("express");
 const Checkout = require("../models/Checkout");
-// const Cart = require("../models/Cart");
+const Cart = require("../models/Cart");
 // const Product = require("../models/Products");
-// const Order = require("../models/Order");
+const Order = require("../models/Order");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -41,46 +41,75 @@ router.post("/", protect, async (req, res) => {
     }
 
     try {
-        //create a new checkout session
-        const newCheckout = await Checkout.create({
+        // Create an Order directly
+        const newOrder = await Order.create({
             user: req.user._id,
-            checkoutItems: checkoutItems,
-            shippingAddress,
-            paymentMethod,
-            totalPrice,
-            paymentStatus: "pending",
+            orderItems: checkoutItems.map(item => ({
+                productId: item.productId,
+                name: item.name,
+                image: item.image,
+                price: item.price,
+                size: item.size,
+                color: item.color,
+                quantity: item.quantity
+            })),
+            shippingAddress: {
+                address: shippingAddress.address,
+                city: shippingAddress.city,
+                postalCode: shippingAddress.postalCode,
+                country: shippingAddress.country,
+                phone: shippingAddress.phone
+            },
+            paymentMethod: paymentMethod,
+            totalPrice: totalPrice,
             isPaid: false,
+            paymentStatus: "pending",
+            status: "Processing"
         });
-        console.log(`Checkout created for user:${req.user._id}`);
-        res.status(201).json(newCheckout);
+
+        // Clear the user's cart after successful order
+        await Cart.findOneAndUpdate(
+            { user: req.user._id },
+            {
+                products: [],
+                totalPrice: 0
+            },
+            { new: true }
+        );
+
+        console.log(`Order created: ${newOrder._id}`);
+        res.status(201).json(newOrder);
+
     } catch (error) {
-        console.error("Error creating new session",error)
+        console.error("Error creating order", error)
         res.status(500).json({ message: "server error" });
     }
 })
 //working
 router.get("/", protect, async (req, res) => {
   try {
-    const orders = await Checkout.find().populate("user", "name email");
+    const orders = await Order.find().populate("user", "name email"); // Change to Order
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 //working
 router.get("/myorders", protect, async (req, res) => {
   try {
-    const myOrders = await Checkout.find({ user: req.user._id });
+    const myOrders = await Order.find({ user: req.user._id }); // Change to Order
     res.json(myOrders);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 //working
 router.put("/:id/status", protect, async (req, res) => {
   const { status } = req.body;
   try {
-    const order = await Checkout.findById(req.params.id);
+    const order = await Order.findById(req.params.id); // Change to Order
     if (!order) return res.status(404).json({ message: "Order not found" });
 
     order.status = status;

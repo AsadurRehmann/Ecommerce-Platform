@@ -73,7 +73,7 @@ router.put("/:id", protect, admin, async (req, res) => {
 router.delete("/:id", protect, admin, async (req, res) => {
     try {
 
-        const product = await Product.findById(req.params.id);
+        const product = await Product.findByIdAndDelete(req.params.id);
 
         if (product) {
             await Product.deleteOne();

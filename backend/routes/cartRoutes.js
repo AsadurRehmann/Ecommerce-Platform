@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
                 0
             )
             await cart.save();
-            return res.status(200).json({ cart })
+            return res.status(200).json(cart)
         } else {
             // create a new cart for the guest or user
             const newCart = await Cart.create({
@@ -127,7 +127,7 @@ router.put("/", async (req, res) => {
 
 router.delete("/", async (req, res) => {
 
-    const { productId, guestId, userId, quantity, size, color } = req.body;
+    const { productId, guestId, userId, size, color } = req.body;
 
     try {
 
@@ -146,7 +146,7 @@ router.delete("/", async (req, res) => {
             cart.products.splice(productIndex, 1);
 
             cart.totalPrice = cart.products.reduce(
-                (acc, item) => acc + item.price * quantity, 0);
+                (acc, item) => acc + item.price * item.quantity, 0);
 
             await cart.save();
             return res.status(200).json(cart);

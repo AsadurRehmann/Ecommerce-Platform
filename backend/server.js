@@ -30,11 +30,12 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/uploads", uploadsRoutes);
+app.use("/api/upload", uploadsRoutes);
 app.use("/api", subscriberRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/products", adminProductRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+
 
 const PORT = process.env.APP_PORT || 8080;
 app.listen(PORT, () => {

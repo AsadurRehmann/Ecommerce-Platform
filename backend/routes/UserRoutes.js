@@ -28,13 +28,17 @@ router.post("/register", async (req, res) => {
                 // send the user and token with response
                 res.status(201).json({
                     user: {
-                        name: user.name
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role
                     }, token
                 })
             }
         )
     } catch (err) {
-        console.log("ERROR", err)
+        console.log("ERROR", err);
+         res.status(500).send("Server error");
     }
 })
 
@@ -62,7 +66,9 @@ router.post("/login", async (req, res) => {
                 // send the user and token with response
                 res.status(200).json({
                     user: {
-                        name: user.name
+                         name: user.name,
+                        email: user.email,
+                        role: user.role
                     }, token
                 })
             }
