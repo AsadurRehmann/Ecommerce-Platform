@@ -27,11 +27,13 @@ function OrderConfirmationPage() {
     return orderDate.toLocaleDateString();
   };
 
-  // Redirect if no order data
-  if (!order) {
-    navigate("/");
-    return null;
-  }
+ useEffect(() => {
+    if (!order) {
+      navigate("/");
+    }
+  }, [order, navigate]);
+
+  if (!order) return null;
 
   // Use orderItems instead of checkoutItems
   const items = order.orderItems || [];

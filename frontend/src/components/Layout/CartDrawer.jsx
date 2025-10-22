@@ -1,13 +1,22 @@
 import { IoMdClose } from "react-icons/io";
 import CartContent from "../Cart/CartContent";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { validateCart } from "@/redux/slices/cartSlice";
+import { useEffect } from "react";
 
 function CartDrawer({ drawerOpen, toggleCartDrawer }) {
   const navigate = useNavigate();
   const { user, guestId } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
   const userId = user ? user._id : null;
+  const dispatch=useDispatch();
+
+
+   useEffect(() => {
+    // Validate cart structure on app load
+    dispatch(validateCart());
+  }, [dispatch]);
 
   const handleCheckout = () => {
     toggleCartDrawer();
@@ -39,7 +48,7 @@ function CartDrawer({ drawerOpen, toggleCartDrawer }) {
           <p className="text-gray-600">Your cart is empty.</p>
         )}
         {/* component for cart content  */}
-       
+
       </div>
       {/* Checkout button fixed at button  */}
       <div className="sticky p-4 bg-white bottom-0">

@@ -7,8 +7,15 @@ import { clearCart } from "@/redux/slices/cartSlice";
 function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, cart } = useSelector((state) => state.cart);
+  const { cart } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.checkout);
+
+  const [validationError, setValidationError] = useState("");
+  const [hasPlacedOrder, setHasPlacedOrder] = useState(false);
+
+  // Store cart snapshot to prevent issues after cart is cleared
+  const [cartSnapshot, setCartSnapshot] = useState(null);
 
   const [shippingAddress, setShippingAddress] = useState({
     firstName: "",
@@ -20,30 +27,67 @@ function Checkout() {
     phone: "",
   });
 
-  // Ensure cart is loaded before proceeding
   useEffect(() => {
-    if (!cart || !cart.products || cart.products.length === 0) {
+    // Only create snapshot if we have a valid cart with products
+    if (cart && cart.products && cart.products.length > 0 && !cartSnapshot) {
+      setCartSnapshot({
+        products: cart.products.map((item) => ({ ...item })), // Deep copy
+        totalPrice: cart.totalPrice,
+      });
+    }
+  }, [cart, cartSnapshot]);
+
+  // Add cleanup to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      // Cleanup if component unmounts
+      setCartSnapshot(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Separate effect for redirect logic
+    if (
+      !hasPlacedOrder &&
+      !cartSnapshot &&
+      (!cart || !cart.products || cart.products.length === 0)
+    ) {
       navigate("/");
     }
-  }, [cart, navigate]);
+  }, [cart, navigate, hasPlacedOrder, cartSnapshot]);
 
   const handleCreateCheckout = async (e) => {
     e.preventDefault();
-
-    // Clear any previous errors
     dispatch(clearError());
+    setValidationError("");
 
-    // Validate required fields
-    if (!shippingAddress.firstName || !shippingAddress.lastName ||
-        !shippingAddress.address || !shippingAddress.city ||
-        !shippingAddress.postalCode || !shippingAddress.country ||
-        !shippingAddress.phone) {
-      dispatch(clearError());
+    if (
+      !shippingAddress.firstName ||
+      !shippingAddress.lastName ||
+      !shippingAddress.address ||
+      !shippingAddress.city ||
+      !shippingAddress.postalCode ||
+      !shippingAddress.country ||
+      !shippingAddress.phone
+    ) {
+      setValidationError("Please fill in all required shipping fields");
+      return;
+    }
+
+    // Use cart snapshot for checkout data
+    const activeCart = cartSnapshot || cart;
+
+    if (
+      !activeCart ||
+      !activeCart.products ||
+      activeCart.products.length === 0
+    ) {
+      setValidationError("Your cart is empty");
       return;
     }
 
     const checkoutData = {
-      checkoutItems: cart.products.map((item) => ({
+      checkoutItems: activeCart.products.map((item) => ({
         productId: item.productId,
         name: item.name,
         size: item.size,
@@ -54,18 +98,24 @@ function Checkout() {
       })),
       shippingAddress,
       paymentMethod: "Cash on Delivery",
-      totalPrice: cart.totalPrice || calculateTotal(cart.products),
+      totalPrice: activeCart.totalPrice || calculateTotal(activeCart.products),
     };
 
     try {
       const result = await dispatch(createCheckout(checkoutData)).unwrap();
-      console.log("Checkout created:", result);
-      dispatch(clearCart());//clear the cart
-      // Navigate to confirmation page with checkout data
-      navigate("/order-confirmation", { state: { checkout: result } });
+      if (result) {
+        setHasPlacedOrder(true);
+
+        // Clear cart on frontend only (backend already clears it)
+        dispatch(clearCart());
+
+        navigate("/order-confirmation", { state: { checkout: result } });
+      } else {
+        setValidationError("Checkout completed but no order data received");
+      }
     } catch (error) {
       console.error("Checkout failed:", error);
-    
+      setValidationError(error.message || "Checkout failed. Please try again.");
     }
   };
 
@@ -76,16 +126,35 @@ function Checkout() {
     );
   };
 
+  // Use cart snapshot if available, otherwise use current cart
+  const displayCart = cartSnapshot || cart;
+
+  if (
+    !displayCart ||
+    !displayCart.products ||
+    displayCart.products.length === 0
+  ) {
+    return (
+      <div className="max-w-7xl mx-auto py-10 px-6 text-center">
+        <h2 className="text-2xl mb-4">Your cart is empty</h2>
+        <button
+          onClick={() => navigate("/")}
+          className="bg-black text-white px-6 py-2 rounded"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter">
-      {/* Error Display */}
-      {error && (
+      {(error || validationError) && (
         <div className="col-span-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
+          {error || validationError}
         </div>
       )}
 
-      {/* Loading Overlay */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg">
@@ -110,7 +179,7 @@ function Checkout() {
           <h3 className="text-lg mb-4">Delivery</h3>
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700">First Name</label>
+              <label className="block text-gray-700">First Name *</label>
               <input
                 type="text"
                 value={shippingAddress.firstName}
@@ -126,7 +195,7 @@ function Checkout() {
             </div>
 
             <div>
-              <label className="block text-gray-700">Last Name</label>
+              <label className="block text-gray-700">Last Name *</label>
               <input
                 type="text"
                 value={shippingAddress.lastName}
@@ -142,7 +211,7 @@ function Checkout() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Address</label>
+            <label className="block text-gray-700">Address *</label>
             <input
               type="text"
               value={shippingAddress.address}
@@ -158,7 +227,7 @@ function Checkout() {
           </div>
           <div className="gap-4 mb-4 grid grid-cols-2">
             <div>
-              <label className="block text-gray-700">City</label>
+              <label className="block text-gray-700">City *</label>
               <input
                 type="text"
                 value={shippingAddress.city}
@@ -174,7 +243,7 @@ function Checkout() {
             </div>
 
             <div>
-              <label className="block text-gray-700">Postal Code</label>
+              <label className="block text-gray-700">Postal Code *</label>
               <input
                 type="text"
                 value={shippingAddress.postalCode}
@@ -190,7 +259,7 @@ function Checkout() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Country</label>
+            <label className="block text-gray-700">Country *</label>
             <input
               type="text"
               value={shippingAddress.country}
@@ -205,7 +274,7 @@ function Checkout() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Phone</label>
+            <label className="block text-gray-700">Phone *</label>
             <input
               type="text"
               value={shippingAddress.phone}
@@ -223,7 +292,13 @@ function Checkout() {
           <div className="mt-6">
             <h3 className="text-lg mb-4">Payment Method</h3>
             <div className="flex items-center space-x-2 mb-4">
-              <input type="radio" name="payment" value="COD" defaultChecked readOnly />
+              <input
+                type="radio"
+                name="payment"
+                value="COD"
+                defaultChecked
+                readOnly
+              />
               <span>Cash on Delivery</span>
             </div>
 
@@ -240,11 +315,10 @@ function Checkout() {
         </form>
       </div>
 
-      {/* Order Summary */}
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg mb-4">Order Summary</h3>
         <div className="border-t py-4 mb-4">
-          {cart && cart.products && cart.products.map((product, index) => (
+          {displayCart.products.map((product, index) => (
             <div
               key={index}
               className="flex items-start justify-between py-2 border-b"
@@ -270,7 +344,7 @@ function Checkout() {
         </div>
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Subtotal</p>
-          <p>${cart ? calculateTotal(cart.products)?.toLocaleString() : "0"}</p>
+          <p>${calculateTotal(displayCart.products)?.toLocaleString()}</p>
         </div>
         <div className="flex justify-between items-center text-lg">
           <p>Shipping</p>
@@ -278,7 +352,7 @@ function Checkout() {
         </div>
         <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
           <p>Total</p>
-          <p>${cart ? calculateTotal(cart.products)?.toLocaleString() : "0"}</p>
+          <p>${calculateTotal(displayCart.products)?.toLocaleString()}</p>
         </div>
       </div>
     </div>

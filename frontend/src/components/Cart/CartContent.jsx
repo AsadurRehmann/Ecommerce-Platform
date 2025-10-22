@@ -9,9 +9,13 @@ import { useDispatch } from "react-redux";
 const CartContent = ({ cart, userId, guestId }) => {
   const dispatch = useDispatch();
 
+
   //handle adding and subtracting to cart
   const handleAddToCart = (productId, delta, quantity, size, color) => {
     const newQuantity = quantity + delta;
+
+
+
     if (newQuantity >= 1) {
       dispatch(
         updateCartItemQuantity({
@@ -25,6 +29,20 @@ const CartContent = ({ cart, userId, guestId }) => {
       );
     }
   };
+
+  // In CartContent.jsx - Add validation
+const CartContent = ({ cart, userId, guestId }) => {
+  // Validate cart structure
+  if (!cart || !cart.products || !Array.isArray(cart.products)) {
+    return (
+      <div className="text-center py-8">
+        <p>Your cart is empty or invalid</p>
+      </div>
+    );
+  }
+
+  // Rest of your component code...
+};
 
   const handleRemoveFromCart = (productId, size, color) => {
     dispatch(removeFromCart({ productId, guestId, size, color, userId }));

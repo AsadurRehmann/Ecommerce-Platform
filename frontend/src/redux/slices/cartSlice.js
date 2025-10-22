@@ -73,20 +73,22 @@ export const updateCartItemQuantity = createAsyncThunk("cart/updateCartItemQuant
 );
 
 //remove from cart
+// In cartSlice.js - Fix the removeFromCart function
 export const removeFromCart = createAsyncThunk("cart/removeFromCart",
      async ({ productId, guestId, userId, size, color }, { rejectWithValue }) => {
     try {
-        const response = await axios({
-            method:"DELETE",
-            url:`${import.meta.env.VITE_BACKEND_URL}/api/cart`,
-            data: {
-                productId,
-                guestId,
-                userId,
-                size,
-                color,
+        const response = await axios.delete(
+            `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
+            {
+                data: { // Use data property for DELETE with body
+                    productId,
+                    guestId,
+                    userId,
+                    size,
+                    color,
+                }
             }
-        });
+        );
         return response.data;
     } catch (error) {
         console.error("Error removing from cart:", error);
@@ -123,8 +125,15 @@ const cartSlice=createSlice({
         clearCart:(state)=>{
             state.cart={products:[]};
             localStorage.removeItem("cart");
+        },
+         validateCart: (state) => {
+            if (!state.cart.products || !Array.isArray(state.cart.products)) {
+                state.cart = { products: [], totalPrice: 0 };
+                saveCartToStorage(state.cart);
+            }
         }
     },
+
     extraReducers:(builder)=>{
         builder
         .addCase(fetchCart.pending,(state)=>{
@@ -195,5 +204,5 @@ const cartSlice=createSlice({
     }
 });
 
-export const {clearCart}=cartSlice.actions;
+export const {clearCart,validateCart}=cartSlice.actions;
 export default cartSlice.reducer;

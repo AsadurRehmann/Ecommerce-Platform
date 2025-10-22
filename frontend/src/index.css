@@ -2,6 +2,125 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Fix mobile scrolling issues */
+html {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+}
+
+/* Remove tap highlight and improve touch */
+.product-card,
+.product-link {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Prevent text selection on product elements */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Add this to your global CSS file (index.css or App.css) */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Prevent pull-to-refresh and overscroll effects */
+body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve touch interactions */
+button, a {
+  touch-action: manipulation;
+}
+
+/* Global mobile scroll prevention */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+  position: relative;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Prevent pull-to-refresh and overscroll */
+body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove tap highlight globally */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve touch interactions */
+button, a {
+  touch-action: manipulation;
+}
+
+/* Prevent text selection on interactive elements */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Improve image rendering */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Custom scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Improve image rendering */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
 :root {
   font-family:"Inter", 'Times New Roman';
   font-optical-sizing: auto;
