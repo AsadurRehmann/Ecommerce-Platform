@@ -128,13 +128,16 @@ router.put("/", async (req, res) => {
 router.delete("/", async (req, res) => {
 
     const { productId, guestId, userId, size, color } = req.body;
+     console.log("DELETE cart request:", { productId, guestId, userId, size, color });
 
     try {
 
         let cart = await getCart(userId, guestId);
 
-        if (!cart) return res.status(404).json({ message: "Cart not found" });
-
+        if (!cart) {
+             console.log("Cart not found for:", { userId, guestId });
+            return res.status(404).json({ message: "Cart not found" });
+}
         const productIndex = cart.products.findIndex(
             (p) =>
                 p.productId.toString() === productId &&
@@ -155,8 +158,8 @@ router.delete("/", async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error." })
+        console.error("Delete cart error:", error);
+        return res.status(500).json({ message: "Server error." });
 
     }
 })

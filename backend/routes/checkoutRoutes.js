@@ -67,15 +67,7 @@ router.post("/", protect, async (req, res) => {
             status: "Processing"
         });
 
-        // Clear the user's cart after successful order
-        await Cart.findOneAndUpdate(
-            { user: req.user._id },
-            {
-                products: [],
-                totalPrice: 0
-            },
-            { new: true }
-        );
+        
 
         console.log(`Order created: ${newOrder._id}`);
         res.status(201).json(newOrder);
